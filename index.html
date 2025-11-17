@@ -1,1 +1,636 @@
-HOLA
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelos de Traducción Automática</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+        
+        .university {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            font-size: 0.9em;
+        }
+        
+        .section {
+            padding: 40px;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            padding-left: 15px;
+        }
+        
+        .dataset-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .dataset-box h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .dataset-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .model-card {
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: linear-gradient(to bottom, #fff 0%, #f8f9ff 100%);
+        }
+        
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .model-card.winner {
+            border-color: #f5576c;
+            background: linear-gradient(to bottom, #fff 0%, #fff5f7 100%);
+        }
+        
+        .model-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .model-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .model-card.winner h3 {
+            color: #f5576c;
+        }
+        
+        .model-features {
+            list-style: none;
+            margin: 15px 0;
+        }
+        
+        .model-features li {
+            padding: 5px 0;
+            font-size: 0.9em;
+        }
+        
+        .model-features li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .comparison-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .comparison-table tbody tr:nth-child(even) {
+            background: #f8f9ff;
+        }
+        
+        .comparison-table tbody tr:hover {
+            background: #e8ecff;
+        }
+        
+        .best-score {
+            background: #f5576c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .conclusion-box {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .conclusion-box h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .key-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .key-point {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid white;
+        }
+        
+        .team {
+            background: #f8f9ff;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .team-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .member {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .link-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s;
+            display: inline-block;
+        }
+        
+        .link-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .winner-badge {
+            background: #f5576c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .charts-section {
+            background: #f8f9ff;
+            padding: 40px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .chart-description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        
+        .chart-placeholder {
+            width: 100%;
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #667eea;
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .image-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 Modelos de Traducción Automática Neural</h1>
+            <p>Comparación de Arquitecturas: Inglés → Búlgaro</p>
+            <div class="university">
+                <strong>Universidad Andina del Cusco</strong><br>
+                Facultad de Ingeniería y Arquitectura<br>
+                Escuela Profesional de Ingeniería de Sistemas
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">📊 Dataset & Objetivo</h2>
+            <div class="dataset-box">
+                <h3>Europarl Parallel Corpus v7 (1996-2011)</h3>
+                <p>Debates del Parlamento Europeo | Dominio: Técnico-Político</p>
+                <div class="dataset-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">1.9M+</div>
+                        <div>Pares de Oraciones</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4</div>
+                        <div>Arquitecturas Comparadas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">10</div>
+                        <div>Épocas de Entrenamiento</div>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="margin-top: 20px; line-height: 1.8;">
+                <strong>Desafío:</strong> Inglés (lengua analítica, SVO rígido) → Búlgaro (lengua eslava flexiva, orden libre, rica morfología verbal). 
+                Un par lingüístico con alto reordenamiento sintáctico y bajo recurso comercial.
+            </p>
+        </div>
+        
+        <div class="section" style="background: #f8f9ff;">
+            <h2 class="section-title">🤖 Arquitecturas Implementadas</h2>
+            <div class="models-grid">
+                <div class="model-card">
+                    <div class="model-icon">🔄</div>
+                    <h3>RNN Simple</h3>
+                    <p><strong>Sin Atención (2014)</strong></p>
+                    <ul class="model-features">
+                        <li>Encoder bidireccional 3 capas</li>
+                        <li>Decoder unidireccional</li>
+                        <li>Contexto fijo (bottleneck)</li>
+                        <li>Teacher forcing</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-weight: bold; color: #f5576c;">BLEU: 17.9</p>
+                </div>
+                
+                <div class="model-card">
+                    <div class="model-icon">🧠</div>
+                    <h3>LSTM + Atención</h3>
+                    <p><strong>Bahdanau (2015)</strong></p>
+                    <ul class="model-features">
+                        <li>LSTM bidireccional</li>
+                        <li>Atención dinámica</li>
+                        <li>Resuelve contexto fijo</li>
+                        <li>Reordenamiento mejorado</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-weight: bold; color: #667eea;">BLEU: 30.7 (+12.8)</p>
+                </div>
+                
+                <div class="model-card">
+                    <div class="model-icon">⚡</div>
+                    <h3>GRU + Atención</h3>
+                    <p><strong>Bahdanau (2015-16)</strong></p>
+                    <ul class="model-features">
+                        <li>GRU bidireccional</li>
+                        <li>Menos parámetros que LSTM</li>
+                        <li>12% más rápido</li>
+                        <li>Menor consumo VRAM</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-weight: bold; color: #667eea;">BLEU: 30.3 (+12.4)</p>
+                </div>
+                
+                <div class="model-card winner">
+                    <span class="winner-badge">🏆 GANADOR</span>
+                    <div class="model-icon">⭐</div>
+                    <h3>Transformer</h3>
+                    <p><strong>Vaswani et al. (2017)</strong></p>
+                    <ul class="model-features">
+                        <li>6 capas encoder/decoder</li>
+                        <li>8 cabezas de atención</li>
+                        <li>Procesamiento paralelo</li>
+                        <li>Positional encoding</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-weight: bold; color: #f5576c; font-size: 1.2em;">BLEU: 36.8 (+18.9)</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="charts-section">
+            <h2 class="section-title">📉 Curvas de Aprendizaje</h2>
+            
+            <div class="image-note">
+                <strong>📌 Nota:</strong> Las siguientes gráficas muestran la evolución del entrenamiento de cada modelo a lo largo de las épocas. 
+                Se puede observar cómo cada arquitectura converge de manera diferente.
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">RNN Simple - Curva de Entrenamiento</div>
+                <div class="chart-description">
+                    Modelo básico sin atención mostrando convergencia limitada debido al cuello de botella del contexto fijo
+                </div>
+                <div class="chart-placeholder">
+                    <div style="text-align: center;">
+                        <div style="font-size: 4em; margin-bottom: 20px;">📊</div>
+                        <p style="color: #666; max-width: 600px;">
+                            <strong>Curva RNN Simple:</strong><br>
+                            Pérdida inicial: ~5.0 → Pérdida final: ~2.1<br>
+                            Convergencia gradual pero con limitaciones en oraciones largas<br>
+                            <em>(Inserta aquí la imagen de la curva de RNN Simple)</em>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">LSTM con Atención Bahdanau - Curva de Entrenamiento</div>
+                <div class="chart-description">
+                    La introducción de atención permite mejor convergencia y manejo de dependencias largas
+                </div>
+                <div class="chart-placeholder">
+                    <div style="text-align: center;">
+                        <div style="font-size: 4em; margin-bottom: 20px;">📈</div>
+                        <p style="color: #666; max-width: 600px;">
+                            <strong>Curva LSTM + Atención:</strong><br>
+                            Pérdida Train: 3.2 → 1.7 | Pérdida Val: 3.1 → 1.8<br>
+                            Mejora significativa con curvas train/val muy cercanas<br>
+                            <em>(Inserta aquí la imagen de la curva de LSTM)</em>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">Evolución del BLEU Score</div>
+                    <div class="chart-placeholder" style="min-height: 300px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 3em; margin-bottom: 15px;">📊</div>
+                            <p style="color: #666;">
+                                <strong>BLEU Score Evolution:</strong><br>
+                                Mejora progresiva desde 0.88 en época 2<br>
+                                hasta 1.30 en época 10<br>
+                                <em>(Gráfica del tercer panel de la imagen 1)</em>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Tiempo por Época</div>
+                    <div class="chart-placeholder" style="min-height: 300px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 3em; margin-bottom: 15px;">⏱️</div>
+                            <p style="color: #666;">
+                                <strong>Tiempo de Entrenamiento:</strong><br>
+                                Patrón oscilante entre 65-100 segundos<br>
+                                Variabilidad debido a complejidad de batches<br>
+                                <em>(Gráfica del segundo panel de la imagen 1)</em>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">🔍 Observaciones de las Curvas:</h3>
+                <ul style="line-height: 2; margin-left: 20px;">
+                    <li><strong>RNN Simple:</strong> Convergencia lenta y limitada, pérdida final elevada (~2.1)</li>
+                    <li><strong>LSTM + Atención:</strong> Convergencia suave y estable, gap mínimo train/val</li>
+                    <li><strong>BLEU Score:</strong> Mejora continua hasta alcanzar plateau en épocas finales</li>
+                    <li><strong>Tiempo:</strong> Variabilidad esperada por diferente complejidad de oraciones</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">📈 Comparación de Resultados</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Arquitectura</th>
+                        <th>BLEU (cased)</th>
+                        <th>BLEU (uncased)</th>
+                        <th>chrF++</th>
+                        <th>COMET</th>
+                        <th>Tiempo</th>
+                        <th>VRAM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>RNN Simple</strong></td>
+                        <td>16.8</td>
+                        <td>17.9</td>
+                        <td>44.2</td>
+                        <td>~68</td>
+                        <td>4h 55min</td>
+                        <td>6.8 GB</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LSTM + Atención</strong></td>
+                        <td>29.4</td>
+                        <td>30.7</td>
+                        <td>56.8</td>
+                        <td>~82</td>
+                        <td>10h 40min</td>
+                        <td>10.1 GB</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GRU + Atención</strong></td>
+                        <td>29.1</td>
+                        <td>30.3</td>
+                        <td>56.4</td>
+                        <td>~81</td>
+                        <td>9h 25min</td>
+                        <td>9.3 GB</td>
+                    </tr>
+                    <tr style="background: #fff5f7;">
+                        <td><strong>Transformer 6L</strong></td>
+                        <td><span class="best-score">35.6</span></td>
+                        <td><span class="best-score">36.8</span></td>
+                        <td><span class="best-score">61.3</span></td>
+                        <td><span class="best-score">~88</span></td>
+                        <td>12h 50min</td>
+                        <td>12.4 GB</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section" style="background: #f8f9ff;">
+            <h2 class="section-title">💡 Conclusiones Clave</h2>
+            <div class="conclusion-box">
+                <h3>🎯 Hallazgos Principales</h3>
+                <div class="key-points">
+                    <div class="key-point">
+                        <strong>1. La Atención es Revolucionaria</strong><br>
+                        El salto de RNN sin atención a modelos con atención representa +12-13 puntos BLEU. El contexto fijo es inadecuado para pares con reordenamiento.
+                    </div>
+                    <div class="key-point">
+                        <strong>2. LSTM vs GRU: Empate Técnico</strong><br>
+                        Diferencia < 0.5 BLEU, pero GRU es 12% más rápido y consume menos recursos. Ideal cuando el presupuesto computacional es limitado.
+                    </div>
+                    <div class="key-point">
+                        <strong>3. Transformer: Dominio Absoluto</strong><br>
+                        36.8 BLEU uncased, superando por +6 puntos a modelos recurrentes y +19 al baseline. La arquitectura definitiva para NMT en 2025.
+                    </div>
+                    <div class="key-point">
+                        <strong>4. Métricas Modernas Favorecen a Transformer</strong><br>
+                        chrF++ y COMET muestran ventajas aún mayores: mejor manejo de reordenamiento, fluidez y fidelidad semántica.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">👥 Equipo de Desarrollo</h2>
+            <div class="team">
+                <div class="team-members">
+                    <div class="member">
+                        <strong>Curo Mendoza Zayin Victor</strong><br>
+                        Contribución: 100%
+                    </div>
+                    <div class="member">
+                        <strong>Huaman Caceres Aldair Jon</strong><br>
+                        Contribución: 10%
+                    </div>
+                    <div class="member">
+                        <strong>Salazar Benavente Jose David</strong><br>
+                        Contribución: 100%
+                    </div>
+                    <div class="member">
+                        <strong>Zavaleta Hurtado Kevyn Diego</strong><br>
+                        Contribución: 100%
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 20px;">
+                    <strong>Docente:</strong> Espetia Huamanga Hugo | <strong>Ciclo:</strong> X | <strong>Asignatura:</strong> Inteligencia Artificial
+                </p>
+            </div>
+        </div>
+        
+        <div class="section" style="text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h2 style="color: white; margin-bottom: 20px;">🔗 Enlaces del Proyecto</h2>
+            <div class="links">
+                <a href="https://www.kaggle.com/datasets/djonafegnem/europarl-parallel-corpus-19962011" class="link-btn" target="_blank">📊 Dataset (Kaggle)</a>
+                <a href="https://github.com/UAC-DavidSB/ModelosTraduccion_IA" class="link-btn" target="_blank">💻 Código (GitHub)</a>
+                <a href="https://uac-davidsb.github.io/IA-Traduccion/" class="link-btn" target="_blank">🌐 Infografía Web</a>
+            </div>
+            <p style="margin-top: 30px; opacity: 0.9;">
+                Cusco - Perú | 2025
+            </p>
+        </div>
+    </div>
+</body>
+</html>

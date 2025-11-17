@@ -294,7 +294,7 @@
             <div class="intro-grid">
                 <div class="info-card">
                     <h4>🎯 Objetivo del Proyecto</h4>
-                    <p>Implementar desde cero y comparar cuatro arquitecturas fundamentales de NMT: RNN Simple, LSTM + Atención, GRU + Atención y Transformer.</p>
+                    <p>Implementar desde cero y comparar cuatro arquitecturas fundamentales de NMT: RNN Simple, LSTM, GRU y Transformer.</p>
                 </div>
                 <div class="info-card">
                     <h4>🌍 Par Lingüístico</h4>
@@ -522,7 +522,7 @@
         new Chart(bleuCtx, {
             type: 'bar',
             data: {
-                labels: ['RNN Simple', 'LSTM + Atención', 'GRU + Atención', 'Transformer'],
+                labels: ['RNN Simple', 'LSTM', 'GRU', 'Transformer'],
                 datasets: [{
                     label: 'BLEU cased',
                     data: [18.8, 20.4, 80.1, 95.5],
@@ -580,14 +580,14 @@
                     borderWidth: 2
                 },
                 {
-                    label: 'LSTM + Atención',
+                    label: 'LSTM',
                     data: [20.61, 56.8, 82, 40, 60],
                     backgroundColor: 'rgba(255, 206, 86, 0.2)',
                     borderColor: 'rgba(255, 206, 86, 1)',
                     borderWidth: 2
                 },
                 {
-                    label: 'GRU + Atención',
+                    label: 'GRU',
                     data: [80.68, 56.4, 81, 50, 65],
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     borderColor: 'rgba(54, 162, 235, 1)',
